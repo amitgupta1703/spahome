@@ -1,0 +1,159 @@
+<html>
+
+<head>
+    <title>Reverse Geocoding</title>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <!-- playground-hide -->
+    <style>
+        #map {
+            height: 100%;
+        }
+
+        /* 
+   * Optional: Makes the sample page fill the window. 
+   */
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        #floating-panel {
+            position: absolute;
+            top: 10px;
+            left: 25%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: "Roboto", "sans-serif";
+            line-height: 30px;
+            padding-left: 10px;
+        }
+
+        #floating-panel {
+            position: absolute;
+            top: 5px;
+            left: 50%;
+            margin-left: -180px;
+            width: 350px;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+        }
+
+        #latlng {
+            width: 225px;
+        }
+    </style>
+
+<script>
+        const process = {
+            env: {}
+        };
+        process.env.GOOGLE_MAPS_API_KEY =
+            "AIzaSyDcFbZ9bBXviOqxPVyuLdpWtOCfgfshmzo";
+    </script>
+</head>
+
+<body>
+    <div id="floating-panel">
+        <input id="latlng" type="text" value="" />
+        <input id="submit" type="button" value="Reverse Geocode" />
+    </div>
+    <div id="map"></div>
+
+      
+    <!-- playground-hide-end -->
+    <script>
+        var lat;
+        var lng;
+        var latlongvalue = '';
+        //var latlng = {} 
+        function getLocation() {
+            const options = {
+                enableHighAccuracy: true,
+                timeout: 5000,
+                maximumAge: 0
+            };
+
+            function success(pos) {
+                const crd = pos.coords;
+                console.log("crd",crd) 
+                lat = crd.latitude;
+                lng = crd.longitude; 
+                latlongvalue=lat+','+lng;
+                document.getElementById('latlng').value = latlongvalue;
+                initMap();
+            }
+
+            function error(err) {
+                console.warn(`ERROR(${err.code}): ${err.message}`);
+            }
+            //to get current possition
+            navigator.geolocation.getCurrentPosition(success, error, options); 
+
+        }
+        
+    
+        function initMap() {
+            console.log("initmap function")
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 15,
+                center: {
+                    lat: lat,
+                    lng: lng
+                },
+            });
+            const geocoder = new google.maps.Geocoder();
+            const infowindow = new google.maps.InfoWindow();
+
+             //get location on map function
+            geocodeLatLng(geocoder, map, infowindow);
+            
+        }
+    //get location on map function
+        function geocodeLatLng(geocoder, map, infowindow) {
+            const input = document.getElementById("latlng").value;
+            console.log("latlng:",input)
+            const latlngStr = input.split(",", 2);
+            const latlng = {
+                lat: parseFloat(latlngStr[0]),
+                lng: parseFloat(latlngStr[1]),
+            };
+
+            geocoder
+                .geocode({
+                    location: latlng
+                })
+                .then((response) => {
+                    if (response.results[0]) {
+                        map.setZoom(18);
+
+                        const marker = new google.maps.Marker({
+                            position: latlng,
+                            map: map,
+                        });
+                        console.log("response", response)
+                        infowindow.setContent(response.results[0].formatted_address);
+                        infowindow.open(map, marker);
+                    } else {
+                        window.alert("No results found");
+                    }
+                })
+                .catch((e) => window.alert("Geocoder failed due to: " + e));
+        }
+
+   // window.onload = getLocation();
+   
+
+    </script>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDcFbZ9bBXviOqxPVyuLdpWtOCfgfshmzo&callback=getLocation&v=weekly"
+        defer></script>
+</body>
+
+</html>

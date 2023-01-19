@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+     
+#map {
+  height: 100%;
+}
+
+/* 
+ * Optional: Makes the sample page fill the window. 
+ */
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#floating-panel {
+  position: absolute;
+  top: 10px;
+  left: 25%;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+  text-align: center;
+  font-family: "Roboto", "sans-serif";
+  line-height: 30px;
+  padding-left: 10px;
+}
+
+#floating-panel {
+  position: absolute;
+  top: 5px;
+  left: 50%;
+  margin-left: -180px;
+  width: 350px;
+  z-index: 5;
+  background-color: #fff;
+  padding: 5px;
+  border: 1px solid #999;
+}
+
+#latlng {
+  width: 225px;
+}
+
+
+    </style>
+</head>
+<body>
+        <!DOCTYPE html>
+        <!--
+         @license
+         Copyright 2019 Google LLC. All Rights Reserved.
+         SPDX-License-Identifier: Apache-2.0
+        -->
+        <html>
+          <head>
+            <title>Reverse Geocoding</title>
+            <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+            <!-- jsFiddle will insert css and js -->
+          </head>
+          <body>
+            <div id="floating-panel">
+              <input id="latlng" type="text" value="40.714224,-73.961452" />
+              <input id="submit" type="button" value="Reverse Geocode" />
+            </div>
+            <div id="map"></div>
+        
+            <!-- 
+             The `defer` attribute causes the callback to execute after the full HTML
+             document has been parsed. For non-blocking uses, avoiding race conditions,
+             and consistent behavior across browsers, consider loading using Promises
+             with https://www.npmjs.com/package/@googlemaps/js-api-loader.
+            -->
+            <script
+              src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB41DRUbKWJHPxaFjMAwdrzWzbVKartNGg&callback=initMap&v=weekly"
+              defer
+            ></script>
+            <script>
+                 var latitude;
+                 var longitude;
+                 var latlongvalue;
+
+        function showLocation(position) {
+           console.log(position)
+             latitude = position.coords.latitude;
+             longitude = position.coords.longitude;
+             latlongvalue = position.coords.latitude + ","
+            + position.coords.longitude;
+
+            console.log(latlongvalue)
+            
+            /* var img_url = "https://maps.googleapis.com/maps/api/staticmap?center="+latlongvalue+"&zoom=14&size=400x300&key=AIzaSyAa8HeLH2lQMbPeOiMlM9D1VxZ7pbGQq8o";
+
+            var v="https://maps.googleapis.com/maps/api/geocode/json?latlng="+latlongvalue+"&sensor=true&key=AIzaSyDcFbZ9bBXviOqxPVyuLdpWtOCfgfshmzo";
+
+            var c="https://geocode.arcgis.com/arcgis/rest/services/World/GeocodeServer/reverseGeocode?f=pjson&featureTypes=&location="+latitude+","+longitude;
+            console.log(v);
+            console.log(c);
+            document.getElementById("mapholder").innerHTML =
+            "<img src='"+img_url+"'>"; */
+         }
+         function errorHandler(err) {
+            if(err.code == 1) {
+               alert("Error: Access is denied!");
+            } else if( err.code == 2) {
+               alert("Error: Position is unavailable!");
+            }
+         }
+        function initMap() {
+          
+            if(navigator.geolocation){
+               // timeout at 60000 milliseconds (60 seconds)
+               var options = {timeout:60000};
+               navigator.geolocation.getCurrentPosition(showLocation, errorHandler, options); 
+            } 
+              
+          
+          const map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 8,
+            center: { lat: latitude, lng: longitude },
+          });
+          const geocoder = new google.maps.Geocoder();
+          const infowindow = new google.maps.InfoWindow();
+        
+          document.getElementById("submit").addEventListener("click", () => {
+            geocodeLatLng(geocoder, map, infowindow);
+          });
+        }
+        
+        function geocodeLatLng(geocoder, map, infowindow) {
+          //const input = document.getElementById("latlng").value;
+          const latlngStr = latlongvalue.split(",", 2);
+          const latlng = {
+            lat: parseFloat(latlngStr[0]),
+            lng: parseFloat(latlngStr[1]),
+          };
+        console.log(latlng)
+          geocoder
+            .geocode({ location: latlng })
+            .then((response) => {
+              if (response.results[0]) {
+                map.setZoom(11);
+                console.log(latlng)
+                const marker = new google.maps.Marker({
+                  position: latlng,
+                  map: map,
+                });
+        console.log(response.results[0].formatted_address)
+                infowindow.setContent(response.results[0].formatted_address);
+                infowindow.open(map, marker);
+              } else {
+                window.alert("No results found");
+              }
+            })
+            .catch((e) => window.alert("Geocoder failed due to: " + e));
+        }
+        
+        window.initMap = initMap;
+        
+                </script>
+          </body>
+        </html>
+
+</body>
+
+</html>

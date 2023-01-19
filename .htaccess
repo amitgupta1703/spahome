@@ -1,0 +1,51 @@
+#remove php file extension-e.g. https://example.com/file.php will become https://example.com/file
+ 
+
+RewriteEngine On
+RewriteRule ^about-us about-us.php [NC,L] 
+RewriteRule ^contact-us contact-us.php [NC,L]
+RewriteRule ^login login.php [NC,L]
+RewriteRule ^become-partner become-partner.php [NC,L]
+RewriteRule ^terms-and-conditions terms-and-conditions.php [NC,L]
+RewriteRule ^privacy-policy privacy-policy.php [NC,L]
+RewriteRule ^refund-policy refund-policy.php [NC,L] 
+RewriteRule ^index index.php [NC,L] 
+
+RewriteRule ^profile profile.php [NC,L]
+RewriteRule ^order-history order-history.php [NC,L]
+RewriteRule ^addresses addresses.php [NC,L]
+RewriteRule ^logout logout.php [NC,L]
+RewriteRule ^change-password change-password.php [NC,L] 
+RewriteRule ^registration registration.php [NC,L]
+RewriteRule ^forgot-password forgot-password.php [NC,L]
+RewriteRule ^franchise franchise.php [NC,L]
+RewriteRule ^shopping-cart shopping-cart.php [NC,L]
+
+RewriteEngine On
+RewriteRule ^services-list/([a-zA-Z0-9*_-]+)/([a-zA-Z0-9*_-]+)/([a-zA-Z0-9*_-]+) services-list.php?m_cat=$1&cat=$2&services_sub_cat=$3 [NC,L]
+
+RewriteEngine On
+RewriteRule ^services-list/([a-zA-Z0-9*_-]+)/([a-zA-Z0-9*_-]+) services-list.php?cat=$1&services_sub_cat=$2 [NC,L]
+#RewriteRule ^services-list/(.*)$ services-list.php?services=$1 [NC,L]
+
+RewriteEngine On 
+RewriteRule ^thank-you/(.*)$ thank-you.php?franchise=$1 [NC,L]
+
+RewriteEngine On 
+RewriteRule ^services-list/(.*)$ services-list.php?services=$1 [NC,L]
+
+RewriteEngine On 
+RewriteRule ^services-list services-list.php [NC,L]
+
+RewriteEngine On 
+RewriteRule ^delete-account/(.*)$ delete-account.php?deleteAccount=$1 [NC,L]
+
+
+#RewriteRule /(.*)$ category-job-search.php?category=$1
+
+#RewriteEngine On
+#RewriteRule ^([a-zA-Z0-9-/]+).html$ product.php?pr_url=$1
+#RewriteRule ^([a-zA-Z0-9-/]+)$ category.php?cat_url=$1 
+
+ 
+
